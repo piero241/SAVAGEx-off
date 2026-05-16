@@ -6,8 +6,8 @@
     <title>SAVAGEx-off • PORTE VERS L'ENFER</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;}
-        body{background:radial-gradient(circle at 20% 30%, #021008, #000000);font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:1.5rem;}
-        .glitch-container{max-width:650px;width:100%;background:#0a0f0a;border:2px solid #00ff41;box-shadow:0 0 20px rgba(0,255,65,0.4);border-radius:28px;padding:2rem 1.8rem;position:relative;z-index:10;}
+        body{background:radial-gradient(circle at 20% 30%, #021008, #000000);font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:1.5rem;position:relative;}
+        .glitch-container{max-width:700px;width:100%;background:#0a0f0a;border:2px solid #00ff41;box-shadow:0 0 20px rgba(0,255,65,0.4);border-radius:28px;padding:2rem 1.8rem;position:relative;z-index:10;}
         .glitch{font-size:2.6rem;font-weight:bold;letter-spacing:5px;color:#00ff41;text-shadow:0.05em 0 0 rgba(255,0,0,0.5);animation:glitch-skew 2.5s infinite alternate;text-align:center;}
         @keyframes glitch-skew{0%{transform:skew(0deg);}20%{transform:skew(1.5deg);}40%{transform:skew(-1deg);}100%{transform:skew(0deg);}}
         .sub{color:#2ecc71;font-size:0.7rem;text-align:center;margin-bottom:1rem;}
@@ -19,11 +19,26 @@
         .prevention-box{background:#0c110cd9;border-left:8px solid #ff3300;padding:1rem;margin:1.5rem 0;border-radius:16px;}
         .prevention-box p{color:#ffaa66;font-weight:bold;}
         .error-msg{color:#ff6666;background:#330000;padding:8px;border-radius:8px;margin:10px 0;text-align:center;font-size:0.8rem;display:none;}
-        .connect-btn{width:100%;background:linear-gradient(95deg,#041f0a,#001a05);border:2px solid #1eff4a;padding:14px;font-family:'Courier New';font-weight:bold;font-size:1.4rem;color:#13ff46;border-radius:60px;cursor:pointer;}
+        .connect-btn{width:100%;background:linear-gradient(95deg,#041f0a,#001a05);border:2px solid #1eff4a;padding:14px;font-family:'Courier New';font-weight:bold;font-size:1.4rem;color:#13ff46;border-radius:60px;cursor:pointer;transition:0.2s;}
         .connect-btn:hover{background:#082a10;box-shadow:0 0 20px #2eff5e;}
         .footer-note{text-align:center;margin-top:28px;font-size:0.65rem;color:#3d9b53;}
         .matrix-dots{position:absolute;bottom:12px;left:20px;font-size:0.6rem;color:#196f2e;}
         .honeypot { position: absolute; left: -9999px; top: -9999px; }
+        
+        /* Terminal interactif */
+        .terminal-panel{background:#020c02;border:1px solid #2ecc71;border-radius:12px;margin-top:20px;padding:8px;}
+        .terminal-header{background:#0a2a0a;padding:5px 10px;font-size:0.7rem;color:#7aff9e;border-bottom:1px solid #2ecc71;}
+        .terminal-output{height:120px;overflow-y:auto;background:#000;color:#0f0;font-family:'Courier New';font-size:0.7rem;padding:5px;white-space:pre-wrap;}
+        .terminal-input-line{display:flex;border-top:1px solid #2ecc71;}
+        .terminal-prompt{background:#0a2a0a;padding:6px;color:#0f0;font-weight:bold;}
+        .terminal-input{flex:1;background:#010;border:none;color:#0f0;font-family:'Courier New';font-size:0.7rem;padding:6px;outline:none;}
+        
+        /* Barre de progression */
+        .loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;display:none;flex-direction:column;justify-content:center;align-items:center;color:#0f0;font-family:'Courier New';}
+        .progress-bar{width:80%;height:20px;background:#111;border:1px solid #0f0;border-radius:10px;overflow:hidden;margin:20px;}
+        .progress-fill{width:0%;height:100%;background:#0f0;transition:width 0.2s;}
+        .loading-text{font-size:0.9rem;text-align:center;margin:10px;}
+        .mute-btn{background:#0a2a0a;border:1px solid #0f0;color:#0f0;padding:5px 10px;border-radius:20px;cursor:pointer;font-size:0.7rem;margin-left:10px;}
     </style>
 </head>
 <body>
@@ -67,14 +82,35 @@
         <button type="submit" class="connect-btn" id="connectBtn">⛧ SE CONNECTER ⛧</button>
         <div class="footer-note"><span>#_TERMINAL_OVERRIDE</span> <span class="terminal-cursor"></span></div>
     </form>
-    <div class="matrix-dots">[ root@savagex ~ ]$ _danger_zone_active</div>
+
+    <!-- Terminal interactif factice -->
+    <div class="terminal-panel">
+        <div class="terminal-header">[ SAVAGEx Terminal v1.0 ] - tape 'help'</div>
+        <div class="terminal-output" id="termOutput">> Interface de commande factice. Essayez 'help'.<br></div>
+        <div class="terminal-input-line">
+            <span class="terminal-prompt">$&nbsp;</span>
+            <input type="text" id="termInput" class="terminal-input" placeholder="commande...">
+        </div>
+    </div>
+    <div style="text-align:right; margin-top:8px;">
+        <button id="muteSoundBtn" class="mute-btn">🔊 Son ON</button>
+        <span style="color:#3d9b53;font-size:0.6rem;"> &nbsp; [Easter egg: ↑↑↓↓←→←→ BA]</span>
+    </div>
+</div>
+
+<!-- Overlay de chargement -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-text" id="loadingMsg">> Initialisation du portail...</div>
+    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+    <div id="damnationCode" style="font-size:0.8rem; margin-top:10px;"></div>
 </div>
 
 <script>
-    (function() {
-        // LIEN VERS LE GROUPE SIGNAL (corrigé)
+    (function(){
+        // ---------- CONFIG ----------
         const SIGNAL_LINK = "https://signal.group/#CjQKILHJeOMKbt_y7jTkqQ8380X-ktLobLPreh5NUnafoJz8EhCSN3hffRDG6ITgzJNZfOKz";
         
+        // Éléments DOM
         const form = document.getElementById('hackerForm');
         const nomInp = document.getElementById('nom');
         const prenomInp = document.getElementById('prenom');
@@ -83,13 +119,52 @@
         const websiteInp = document.getElementById('website');
         const errorDiv = document.getElementById('errorBox');
         const btn = document.getElementById('connectBtn');
-
+        
+        // Terminal
+        const termOutput = document.getElementById('termOutput');
+        const termInput = document.getElementById('termInput');
+        
+        // Overlay loading
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingMsgSpan = document.getElementById('loadingMsg');
+        const progressFill = document.getElementById('progressFill');
+        const damnationSpan = document.getElementById('damnationCode');
+        
+        // Son
+        let audioCtx = null;
+        let isMuted = true; // Par défaut muet pour éviter auto-play bloqué
+        const muteBtn = document.getElementById('muteSoundBtn');
+        
+        // Anti-spam renforcé : max 3 tentatives par heure (stockage local)
+        const ATTEMPT_KEY = 'savagex_attempts';
+        function checkRateLimit() {
+            const now = Date.now();
+            let attempts = localStorage.getItem(ATTEMPT_KEY);
+            if (!attempts) {
+                localStorage.setItem(ATTEMPT_KEY, JSON.stringify([]));
+                return true;
+            }
+            let timestamps = JSON.parse(attempts);
+            // Garder seulement les tentatives des dernières 60 minutes
+            timestamps = timestamps.filter(ts => (now - ts) < 60*60*1000);
+            if (timestamps.length >= 3) {
+                const oldest = timestamps[0];
+                const minutesLeft = Math.ceil((60*60*1000 - (now - oldest)) / (60*1000));
+                showError(`⏳ Limite de 3 tentatives par heure. Réessaie dans ${minutesLeft} minute(s).`);
+                return false;
+            }
+            timestamps.push(now);
+            localStorage.setItem(ATTEMPT_KEY, JSON.stringify(timestamps));
+            return true;
+        }
+        
+        // Fonctions utilitaires
         function showError(msg) {
             errorDiv.style.display = 'block';
             errorDiv.innerText = msg;
             setTimeout(() => { errorDiv.style.display = 'none'; }, 5000);
         }
-
+        
         let lastSubmitTime = 0;
         function isSpam() {
             if (websiteInp.value.trim() !== "") return true;
@@ -98,13 +173,12 @@
             lastSubmitTime = now;
             return false;
         }
-
+        
         function validate() {
             const nom = nomInp.value.trim();
             const prenom = prenomInp.value.trim();
             const email = emailInp.value.trim();
             const pwd = pwdInp.value.trim();
-
             if (!nom || !prenom || !email || !pwd) {
                 showError("❌ Tous les champs sont obligatoires.");
                 return false;
@@ -114,53 +188,193 @@
                 return false;
             }
             if (pwd.length < 6) {
-                showError("❌ Le mot de passe doit contenir au moins 6 caractères.");
+                showError("❌ Mot de passe trop court (minimum 6 caractères).");
                 return false;
             }
             return true;
         }
-
+        
+        // Génération identifiant unique de damnation
+        function generateDamnationId(prenom) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i=0;i<8;i++) code += chars.charAt(Math.floor(Math.random()*chars.length));
+            return `D4MN-${code}`;
+        }
+        
+        // Sauvegarde locale
         function saveToLocalStorage(data) {
             let existing = localStorage.getItem('savagex_users');
             existing = existing ? JSON.parse(existing) : [];
             existing.push(data);
             localStorage.setItem('savagex_users', JSON.stringify(existing));
-            console.log("Données sauvegardées localement", data);
         }
-
+        
+        // Barre de progression + messages
+        async function startLoadingAnimation(prenom, damnId) {
+            loadingOverlay.style.display = 'flex';
+            progressFill.style.width = '0%';
+            const steps = [
+                { text: "> Initialisation du portail...", progress: 10 },
+                { text: "> Décryptage de l'identité...", progress: 25 },
+                { text: "> Connexion au réseau Shadow...", progress: 40 },
+                { text: "> Contournement des pare-feu...", progress: 55 },
+                { text: "> Génération du jeton de damnation...", progress: 70 },
+                { text: "> Ouverture du vortex...", progress: 85 },
+                { text: `> Bienvenue ${prenom}, ton matricule: ${damnId}`, progress: 100 }
+            ];
+            for (let step of steps) {
+                loadingMsgSpan.innerHTML = step.text;
+                progressFill.style.width = step.progress + '%';
+                await new Promise(r => setTimeout(r, 600));
+            }
+            // Afficher le code
+            damnationSpan.innerHTML = `🔥 Ton identifiant de damnation : <strong style="color:#ffaa44">${damnId}</strong> 🔥`;
+            await new Promise(r => setTimeout(r, 1500));
+        }
+        
+        // Gestion de la soumission
         async function handleSubmit(e) {
             e.preventDefault();
-
+            
+            // Anti-spam & rate limit
             if (isSpam()) {
                 showError("🛡️ Action suspecte détectée. Veuillez patienter 2 secondes.");
                 return;
             }
+            if (!checkRateLimit()) return;
             if (!validate()) return;
-
-            const originalText = btn.innerText;
-            btn.innerText = "⧫ OUVERTURE DU PORTAIL ⧫";
-            btn.disabled = true;
-
+            
             const nom = nomInp.value.trim();
             const prenom = prenomInp.value.trim();
             const email = emailInp.value.trim();
-            const password = pwdInp.value.trim();
-
-            const userData = {
-                nom: nom,
-                prenom: prenom,
-                email: email,
-                timestamp: new Date().toISOString()
-            };
-            saveToLocalStorage(userData);
-
-            // Redirection vers Signal après un court délai
-            setTimeout(() => {
-                window.location.href = SIGNAL_LINK;
-            }, 800);
+            const pwd = pwdInp.value.trim(); // non stocké pour sécurité
+            
+            const damnId = generateDamnationId(prenom);
+            
+            // Sauvegarde locale
+            saveToLocalStorage({ nom, prenom, email, damnId, timestamp: new Date().toISOString() });
+            
+            // Désactiver bouton
+            btn.disabled = true;
+            btn.innerText = "⧫ OUVERTURE DU PORTAIL ⧫";
+            
+            // Afficher la barre de chargement
+            await startLoadingAnimation(prenom, damnId);
+            
+            // Message personnalisé (alert avant redirection)
+            alert(`🔥 ${prenom}, tu es maintenant marqué. Ton matricule: ${damnId}. Prépare-toi pour l'enfer...`);
+            
+            // Redirection vers Signal
+            window.location.href = SIGNAL_LINK;
         }
-
+        
         form.addEventListener('submit', handleSubmit);
+        
+        // ---------- TERMINAL FACTICE ----------
+        const commands = {
+            help: "Commandes: help, whoami, status, hack, exit, matrix, pwd, ls, clear, sudo",
+            whoami: () => `Utilisateur: ${nomInp.value.trim() || "anonyme"} (non connecté)`,
+            status: () => `Statut: ${nomInp.value.trim() ? "En attente de damnation" : "Aucun profil"}`,
+            hack: "Hacking en cours... [ÉCHEC] Tu n'as pas les privilèges root.",
+            exit: "Ferme le terminal? Non, tu ne peux pas échapper à SAVAGEx.",
+            matrix: "Tu vois le code... mais le comprends-tu ?",
+            pwd: "/home/savagex/portail",
+            ls: "identifiants.txt  damnation.log  portail.exe",
+            clear: () => { termOutput.innerHTML = ''; return "Terminal nettoyé."; },
+            sudo: "Commande non reconnue. Tente 'help'."
+        };
+        
+        function processCommand(cmd) {
+            const parts = cmd.trim().toLowerCase().split(/\s+/);
+            const base = parts[0];
+            if (base === 'clear') {
+                termOutput.innerHTML = '';
+                return '';
+            }
+            if (commands[base]) {
+                let resp = commands[base];
+                if (typeof resp === 'function') resp = resp();
+                return `> ${resp}`;
+            }
+            return `> Commande inconnue: ${cmd}. Tape 'help'.`;
+        }
+        
+        termInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = termInput.value;
+                if (cmd.trim() !== '') {
+                    const outputLine = `$ ${cmd}\n${processCommand(cmd)}`;
+                    termOutput.innerHTML += outputLine + '\n';
+                    termOutput.scrollTop = termOutput.scrollHeight;
+                }
+                termInput.value = '';
+            }
+        });
+        
+        // ---------- SON AMBIANCE (simple bruitage) ----------
+        function initAudio() {
+            if (audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            // Générer un bruit de fond doux (oscillateur)
+            const oscillator = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.value = 80;
+            gain.gain.value = 0.05;
+            oscillator.connect(gain);
+            gain.connect(audioCtx.destination);
+            oscillator.start();
+            // Pour que ça continue à l'infini, on boucle
+            oscillator.onended = () => {};
+            // On garde l'oscillateur dans une variable globale pour pouvoir l'arrêter
+            window.ambientOsc = oscillator;
+            window.ambientGain = gain;
+        }
+        
+        function toggleSound() {
+            if (!audioCtx) {
+                initAudio();
+                audioCtx.resume();
+                isMuted = false;
+                muteBtn.innerHTML = "🔊 Son ON";
+            } else {
+                if (isMuted) {
+                    audioCtx.resume();
+                    if (window.ambientGain) window.ambientGain.gain.value = 0.05;
+                    isMuted = false;
+                    muteBtn.innerHTML = "🔊 Son ON";
+                } else {
+                    if (window.ambientGain) window.ambientGain.gain.value = 0;
+                    isMuted = true;
+                    muteBtn.innerHTML = "🔇 Son OFF";
+                }
+            }
+        }
+        
+        muteBtn.addEventListener('click', toggleSound);
+        // Démarrer muet par défaut pour respecter navigateur
+        // L'utilisateur devra cliquer sur "Son ON" pour activer
+        
+        // ---------- EASTER EGG : Code Konami ----------
+        let konami = [];
+        const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','KeyB','KeyA'];
+        document.addEventListener('keydown', (e) => {
+            konami.push(e.code);
+            if (konami.length > konamiCode.length) konami.shift();
+            if (JSON.stringify(konami) === JSON.stringify(konamiCode)) {
+                alert("🔓 EASTER EGG ACTIVÉ !\nTu as débloqué le mode root secret. Mais rien ne change... ou presque ?");
+                // Petit effet : changer la couleur du glitch
+                document.querySelector('.glitch').style.textShadow = "0 0 10px cyan";
+                setTimeout(() => document.querySelector('.glitch').style.textShadow = "", 3000);
+                konami = [];
+            }
+        });
+        
+        // Ajouter un message de bienvenue dans le terminal
+        setTimeout(() => {
+            termOutput.innerHTML += "> Terminal prêt. Tape 'help'.\n";
+        }, 500);
     })();
 </script>
 </body>

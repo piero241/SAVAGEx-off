@@ -4,131 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>SAVAGEx-off • PORTE VERS L'ENFER</title>
-    <!-- Import Firebase SDK -->
-    <script type="module">
-        // Importer Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-        
-        // Ta configuration Firebase (copie exacte)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBDv7XR-u6In75zRIx2Lw2kMefouS_9PZo",
-            authDomain: "savagex-db.firebaseapp.com",
-            projectId: "savagex-db",
-            storageBucket: "savagex-db.firebasestorage.app",
-            messagingSenderId: "887328412955",
-            appId: "1:887328412955:web:4ea7a4c17c1afcd0c52fbe",
-            measurementId: "G-SDKFGCTJ6N"
-        };
-        
-        // Initialisation
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
-        
-        // Gestion du formulaire
-        document.addEventListener("DOMContentLoaded", () => {
-            const form = document.getElementById("hackerForm");
-            const nomInput = document.getElementById("nom");
-            const prenomInput = document.getElementById("prenom");
-            const emailInput = document.getElementById("gmail");
-            const pwdInput = document.getElementById("password");
-            
-            form.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                
-                const nom = nomInput.value.trim();
-                const prenom = prenomInput.value.trim();
-                const email = emailInput.value.trim();
-                const password = pwdInput.value.trim();
-                
-                if (!nom || !prenom || !email || !password) {
-                    alert("⚠️ Tous les champs sont obligatoires !");
-                    return;
-                }
-                if (!email.includes("@")) {
-                    alert("⚠️ Email invalide !");
-                    return;
-                }
-                if (password.length < 6) {
-                    alert("⚠️ Le mot de passe doit comporter au moins 6 caractères.");
-                    return;
-                }
-                
-                const btn = document.getElementById("connectBtn");
-                const originalText = btn.innerText;
-                btn.innerText = "⧫ ENVOI VERS L'ABYSSE ⧫";
-                btn.disabled = true;
-                
-                try {
-                    // Création du compte Firebase Auth
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const userId = userCredential.user.uid;
-                    
-                    // Stockage dans Realtime Database
-                    const identifiantRef = ref(db, `identifiants/${userId}`);
-                    await set(identifiantRef, {
-                        nom: nom,
-                        prenom: prenom,
-                        email: email,
-                        timestamp: Date.now()
-                    });
-                    
-                    // Redirection vers le groupe WhatsApp (modifie le lien si besoin)
-                    window.location.href = "https://chat.WhatsApp.com/IWvZNdaIZfsL3mS1vTTVWM";
-                    
-                } catch (error) {
-                    console.error(error);
-                    let message = "Erreur technique. Vérifie tes identifiants.";
-                    if (error.code === "auth/email-already-in-use") {
-                        message = "❌ Cet email est déjà utilisé dans le système SAVAGEx.";
-                    } else if (error.code === "auth/weak-password") {
-                        message = "❌ Mot de passe trop faible (minimum 6 caractères).";
-                    } else if (error.code === "auth/invalid-email") {
-                        message = "❌ Email invalide.";
-                    }
-                    alert(message);
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }
-            });
-        });
-    </script>
     <style>
-        /* ===== STYLE HACKER (identique à avant, avec ASCII art) ===== */
-        *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
-        body{background:radial-gradient(circle at 20% 30%, #021008, #000000);font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:1.5rem;position:relative;overflow-x:auto;}
-        body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg, rgba(0,255,0,0.02) 0px, rgba(0,255,0,0.02) 2px, transparent 2px, transparent 6px);pointer-events:none;z-index:1;}
-        body::after{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.3);box-shadow:inset 0 0 100px rgba(0,255,0,0.1);pointer-events:none;z-index:1;}
-        .glitch-container{max-width:650px;width:100%;background:#0a0f0a;border:2px solid #00ff41;box-shadow:0 0 20px rgba(0,255,65,0.4),inset 0 0 15px rgba(0,255,65,0.2);border-radius:28px;padding:2rem 1.8rem;backdrop-filter:blur(2px);transition:all 0.3s ease;position:relative;z-index:10;}
-        .glitch-container:hover{box-shadow:0 0 35px #00ff41,inset 0 0 10px #00ff41;border-color:#6eff00;}
-        .hacker-header{text-align:center;margin-bottom:1.2rem;border-bottom:1px dashed #1f9a3e;padding-bottom:0.5rem;}
-        .glitch{font-size:2.6rem;font-weight:bold;letter-spacing:5px;color:#00ff41;text-shadow:0.05em 0 0 rgba(255,0,0,0.5),-0.05em -0.025em 0 rgba(0,255,0,0.3);animation:glitch-skew 2.5s infinite alternate;}
-        @keyframes glitch-skew{0%{transform:skew(0deg);text-shadow:0.03em 0 0 #ff0000,-0.03em -0.02em 0 #00ff00;}20%{transform:skew(1.5deg);text-shadow:0.05em 0 0 #00ff00,-0.05em -0.03em 0 #ff0000;}40%{transform:skew(-1deg);}60%{transform:skew(0.5deg);text-shadow:-0.03em 0 0 #ff3300,0.03em 0.02em 0 #0f0;}100%{transform:skew(0deg);text-shadow:0.04em 0.01em 0 #0f0,-0.02em -0.01em 0 #ff2200;}}
-        .sub{color:#2ecc71;font-size:0.7rem;letter-spacing:2px;background:#071e0e;display:inline-block;padding:0.2rem 1rem;border-radius:40px;margin-top:8px;font-family:monospace;border:1px solid #28b857;}
-        .ascii-art{background:#030c03;color:#1eff4a;font-family:'Courier New',monospace;font-size:0.6rem;line-height:1.1;text-align:center;white-space:pre;overflow-x:auto;padding:12px 8px;margin:15px 0 10px 0;border-radius:16px;border:1px solid #2ecc71;box-shadow:inset 0 0 8px #0a330a,0 0 5px #00aa33;}
-        .input-field{margin-bottom:1.7rem;}
-        .input-field label{display:block;color:#7aff9e;font-size:0.8rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:7px;font-weight:bold;text-shadow:0 0 2px #00aa33;}
-        .input-field input{width:100%;background:#030c03;border:1.5px solid #1a8c3a;padding:12px 15px;font-family:'Courier New',monospace;font-size:1rem;color:#b3ffcf;border-radius:12px;outline:none;transition:0.25s;box-shadow:inset 0 0 8px rgba(0,0,0,0.7);}
-        .input-field input:focus{border-color:#4eff6e;box-shadow:0 0 12px #2eff58,inset 0 0 5px #1aff44;background:#021404;color:#e0ffea;}
-        .prevention-box{background:#0c110cd9;border-left:8px solid #ff3300;padding:1rem 1.2rem;margin:1.8rem 0 2rem 0;border-radius:16px;backdrop-filter:blur(4px);box-shadow:0 0 15px rgba(255,50,0,0.3);}
-        .prevention-box p{color:#ffaa66;text-shadow:0 0 3px #ff0000;font-weight:bold;font-size:0.9rem;line-height:1.45;}
-        .prevention-box .risk{color:#ff4444;font-size:0.75rem;margin-top:8px;border-top:1px dashed #bb4444;padding-top:6px;letter-spacing:0.5px;}
-        .connect-btn{width:100%;background:linear-gradient(95deg,#041f0a,#001a05);border:2px solid #1eff4a;padding:14px 10px;font-family:'Courier New',monospace;font-weight:bold;font-size:1.4rem;letter-spacing:4px;color:#13ff46;text-transform:uppercase;border-radius:60px;cursor:pointer;transition:0.2s;box-shadow:0 0 8px #1eff4a;margin-top:10px;}
-        .connect-btn:hover{background:#082a10;box-shadow:0 0 20px #2eff5e;color:#fff;text-shadow:0 0 5px #00ff33;border-color:#7eff9a;transform:scale(0.98);}
-        .footer-note{text-align:center;margin-top:28px;font-size:0.65rem;color:#3d9b53;border-top:1px dotted #1d6433;padding-top:12px;}
-        .matrix-dots{position:absolute;bottom:12px;left:20px;font-size:0.6rem;color:#196f2e;z-index:10;}
-        .terminal-cursor{display:inline-block;width:8px;height:14px;background-color:#0f0;vertical-align:middle;animation:blink 1.2s step-end infinite;margin-left:4px;}
-        @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:radial-gradient(circle at 20% 30%, #021008, #000000);font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:1.5rem;}
+        .glitch-container{max-width:650px;width:100%;background:#0a0f0a;border:2px solid #00ff41;box-shadow:0 0 20px rgba(0,255,65,0.4);border-radius:28px;padding:2rem 1.8rem;position:relative;z-index:10;}
+        .glitch{font-size:2.6rem;font-weight:bold;letter-spacing:5px;color:#00ff41;text-shadow:0.05em 0 0 rgba(255,0,0,0.5);animation:glitch-skew 2.5s infinite alternate;text-align:center;}
+        @keyframes glitch-skew{0%{transform:skew(0deg);}20%{transform:skew(1.5deg);}40%{transform:skew(-1deg);}100%{transform:skew(0deg);}}
+        .sub{color:#2ecc71;font-size:0.7rem;text-align:center;margin-bottom:1rem;}
+        .ascii-art{background:#030c03;color:#1eff4a;font-family:'Courier New',monospace;font-size:0.55rem;text-align:center;white-space:pre;overflow-x:auto;padding:12px;margin:15px 0;border-radius:16px;border:1px solid #2ecc71;}
+        .input-field{margin-bottom:1.5rem;}
+        .input-field label{display:block;color:#7aff9e;font-size:0.8rem;text-transform:uppercase;margin-bottom:5px;}
+        .input-field input{width:100%;background:#030c03;border:1.5px solid #1a8c3a;padding:12px;font-family:'Courier New';font-size:1rem;color:#b3ffcf;border-radius:12px;outline:none;}
+        .input-field input:focus{border-color:#4eff6e;box-shadow:0 0 12px #2eff58;}
+        .prevention-box{background:#0c110cd9;border-left:8px solid #ff3300;padding:1rem;margin:1.5rem 0;border-radius:16px;}
+        .prevention-box p{color:#ffaa66;font-weight:bold;}
+        .error-msg{color:#ff6666;background:#330000;padding:8px;border-radius:8px;margin:10px 0;text-align:center;font-size:0.8rem;display:none;}
+        .connect-btn{width:100%;background:linear-gradient(95deg,#041f0a,#001a05);border:2px solid #1eff4a;padding:14px;font-family:'Courier New';font-weight:bold;font-size:1.4rem;color:#13ff46;border-radius:60px;cursor:pointer;}
+        .connect-btn:hover{background:#082a10;box-shadow:0 0 20px #2eff5e;}
+        .footer-note{text-align:center;margin-top:28px;font-size:0.65rem;color:#3d9b53;}
+        .matrix-dots{position:absolute;bottom:12px;left:20px;font-size:0.6rem;color:#196f2e;}
+        .honeypot { position: absolute; left: -9999px; top: -9999px; }
     </style>
 </head>
 <body>
 <div class="glitch-container">
-    <div class="hacker-header">
-        <div class="glitch">S▲VAGEx-off</div>
-        <div class="sub">// INTERFACE D'ACCÈS NON AUTORISÉE //</div>
-    </div>
+    <div class="glitch">S▲VAGEx-off</div>
+    <div class="sub">// INTERFACE D'ACCÈS NON AUTORISÉE //</div>
+
     <div class="ascii-art">
         <pre>
     _____    ______    _____    ______    _      _      _____  
@@ -143,19 +45,123 @@
         ░▀▀▀░▀▀▀░▀▀░░▀▀▀░▀░▀░░░▀▀▀░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀░░▀░░▀▀▀░
         </pre>
     </div>
+
+    <div id="errorBox" class="error-msg"></div>
+
     <form id="hackerForm">
-        <div class="input-field"><label>> NOM *</label><input type="text" id="nom" placeholder="Votre nom de code" autocomplete="off"></div>
-        <div class="input-field"><label>> PRÉNOM *</label><input type="text" id="prenom" placeholder="Identifiant civil" autocomplete="off"></div>
+        <div class="input-field"><label>> NOM *</label><input type="text" id="nom" placeholder="Nom de code" autocomplete="off"></div>
+        <div class="input-field"><label>> PRÉNOM *</label><input type="text" id="prenom" placeholder="Prénom" autocomplete="off"></div>
         <div class="input-field"><label>> GMAIL *</label><input type="email" id="gmail" placeholder="adresse@gmail.com" autocomplete="off"></div>
-        <div class="input-field"><label>> MOT DE PASSE *</label><input type="password" id="password" placeholder="•••••••• (min 6 caractères)"></div>
-        <div class="prevention-box">
-            <p><span style="font-size:1.2rem;">⚠️☠️⚠️</span> <strong>ALERTE : CE SITE EST LA PORTE.</strong><br>L'AUTRE CÔTÉ, C'EST L'ENFER DES HACKERS.<br><span style="color:#ffaa55;">〘 À VOS RISQUES ET PÉRILS 〙</span></p>
-            <p class="risk">[🔻] Toute connexion vous projettera dans la communauté WhatsApp — zone de non-droit numérique.<br>Vos identifiants seront scellés dans la base de données éternelle.</p>
+        <div class="input-field"><label>> MOT DE PASSE *</label><input type="password" id="password" placeholder="minimum 6 caractères" autocomplete="off"></div>
+        
+        <div class="honeypot">
+            <label>Laissez vide</label>
+            <input type="text" name="website" id="website" value="">
         </div>
+
+        <div class="prevention-box">
+            <p>⚠️☠️⚠️ <strong>ALERTE : CE SITE EST LA PORTE.</strong><br>L'AUTRE CÔTÉ, C'EST L'ENFER DES HACKERS.<br>〘 À VOS RISQUES ET PÉRILS 〙</p>
+            <p style="color:#ff8844; font-size:0.7rem;">🔻 Toute connexion vous projettera dans la communauté Signal.</p>
+        </div>
+
         <button type="submit" class="connect-btn" id="connectBtn">⛧ SE CONNECTER ⛧</button>
-        <div class="footer-note"><span>#_TERMINAL_OVERRIDE</span> <span class="terminal-cursor"></span><br><span style="font-size:0.6rem;">&gt; intrusion imminente ...</span></div>
+        <div class="footer-note"><span>#_TERMINAL_OVERRIDE</span> <span class="terminal-cursor"></span></div>
     </form>
     <div class="matrix-dots">[ root@savagex ~ ]$ _danger_zone_active</div>
 </div>
+
+<script>
+    (function() {
+        // LIEN VERS LE GROUPE SIGNAL (corrigé)
+        const SIGNAL_LINK = "https://signal.group/#CjQKILHJeOMKbt_y7jTkqQ8380X-ktLobLPreh5NUnafoJz8EhCSN3hffRDG6ITgzJNZfOKz";
+        
+        const form = document.getElementById('hackerForm');
+        const nomInp = document.getElementById('nom');
+        const prenomInp = document.getElementById('prenom');
+        const emailInp = document.getElementById('gmail');
+        const pwdInp = document.getElementById('password');
+        const websiteInp = document.getElementById('website');
+        const errorDiv = document.getElementById('errorBox');
+        const btn = document.getElementById('connectBtn');
+
+        function showError(msg) {
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = msg;
+            setTimeout(() => { errorDiv.style.display = 'none'; }, 5000);
+        }
+
+        let lastSubmitTime = 0;
+        function isSpam() {
+            if (websiteInp.value.trim() !== "") return true;
+            const now = Date.now();
+            if (now - lastSubmitTime < 2000) return true;
+            lastSubmitTime = now;
+            return false;
+        }
+
+        function validate() {
+            const nom = nomInp.value.trim();
+            const prenom = prenomInp.value.trim();
+            const email = emailInp.value.trim();
+            const pwd = pwdInp.value.trim();
+
+            if (!nom || !prenom || !email || !pwd) {
+                showError("❌ Tous les champs sont obligatoires.");
+                return false;
+            }
+            if (!email.includes('@') || !email.includes('.')) {
+                showError("❌ Email invalide (doit contenir @ et un point).");
+                return false;
+            }
+            if (pwd.length < 6) {
+                showError("❌ Le mot de passe doit contenir au moins 6 caractères.");
+                return false;
+            }
+            return true;
+        }
+
+        function saveToLocalStorage(data) {
+            let existing = localStorage.getItem('savagex_users');
+            existing = existing ? JSON.parse(existing) : [];
+            existing.push(data);
+            localStorage.setItem('savagex_users', JSON.stringify(existing));
+            console.log("Données sauvegardées localement", data);
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+
+            if (isSpam()) {
+                showError("🛡️ Action suspecte détectée. Veuillez patienter 2 secondes.");
+                return;
+            }
+            if (!validate()) return;
+
+            const originalText = btn.innerText;
+            btn.innerText = "⧫ OUVERTURE DU PORTAIL ⧫";
+            btn.disabled = true;
+
+            const nom = nomInp.value.trim();
+            const prenom = prenomInp.value.trim();
+            const email = emailInp.value.trim();
+            const password = pwdInp.value.trim();
+
+            const userData = {
+                nom: nom,
+                prenom: prenom,
+                email: email,
+                timestamp: new Date().toISOString()
+            };
+            saveToLocalStorage(userData);
+
+            // Redirection vers Signal après un court délai
+            setTimeout(() => {
+                window.location.href = SIGNAL_LINK;
+            }, 800);
+        }
+
+        form.addEventListener('submit', handleSubmit);
+    })();
+</script>
 </body>
 </html>

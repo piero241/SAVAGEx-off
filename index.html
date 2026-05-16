@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SAVAGEx • PORTE VERS L'ENFER NUMÉRIQUE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: radial-gradient(circle at 20% 30%, #021008, #000000);
+            font-family: 'Courier New', 'Fira Code', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.02) 0px, rgba(0, 255, 0, 0.02) 2px, transparent 2px, transparent 6px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: inset 0 0 100px rgba(0, 255, 0, 0.1);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glitch-container {
+            max-width: 650px;
+            width: 100%;
+            background: #0a0f0a;
+            border: 2px solid #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4), inset 0 0 15px rgba(0, 255, 65, 0.2);
+            border-radius: 28px;
+            padding: 2rem 1.8rem;
+            backdrop-filter: blur(2px);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .glitch-container:hover {
+            box-shadow: 0 0 35px #00ff41, inset 0 0 10px #00ff41;
+            border-color: #6eff00;
+        }
+
+        .hacker-header {
+            text-align: center;
+            margin-bottom: 1.2rem;
+            border-bottom: 1px dashed #1f9a3e;
+            padding-bottom: 0.5rem;
+        }
+
+        .glitch {
+            font-size: 2.6rem;
+            font-weight: bold;
+            letter-spacing: 5px;
+            color: #00ff41;
+            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.5), -0.05em -0.025em 0 rgba(0, 255, 0, 0.3);
+            animation: glitch-skew 2.5s infinite alternate;
+        }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); text-shadow: 0.03em 0 0 #ff0000, -0.03em -0.02em 0 #00ff00; }
+            20% { transform: skew(1.5deg); text-shadow: 0.05em 0 0 #00ff00, -0.05em -0.03em 0 #ff0000; }
+            40% { transform: skew(-1deg); }
+            60% { transform: skew(0.5deg); text-shadow: -0.03em 0 0 #ff3300, 0.03em 0.02em 0 #0f0; }
+            100% { transform: skew(0deg); text-shadow: 0.04em 0.01em 0 #0f0, -0.02em -0.01em 0 #ff2200; }
+        }
+
+        .sub {
+            color: #2ecc71;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            background: #071e0e;
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            margin-top: 8px;
+            font-family: monospace;
+            border: 1px solid #28b857;
+        }
+
+        /* ASCII ART style */
+        .ascii-art {
+            background: #030c03;
+            color: #1eff4a;
+            font-family: 'Courier New', monospace;
+            font-size: 0.6rem;
+            line-height: 1.1;
+            text-align: center;
+            white-space: pre;
+            overflow-x: auto;
+            padding: 12px 8px;
+            margin: 15px 0 10px 0;
+            border-radius: 16px;
+            border: 1px solid #2ecc71;
+            box-shadow: inset 0 0 8px #0a330a, 0 0 5px #00aa33;
+            letter-spacing: 0px;
+            font-weight: bold;
+        }
+
+        .input-field {
+            margin-bottom: 1.7rem;
+            position: relative;
+        }
+
+        .input-field label {
+            display: block;
+            color: #7aff9e;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 7px;
+            font-weight: bold;
+            text-shadow: 0 0 2px #00aa33;
+        }
+
+        .input-field input {
+            width: 100%;
+            background: #030c03;
+            border: 1.5px solid #1a8c3a;
+            padding: 12px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: #b3ffcf;
+            border-radius: 12px;
+            outline: none;
+            transition: 0.25s;
+            font-weight: 500;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.7);
+        }
+
+        .input-field input:focus {
+            border-color: #4eff6e;
+            box-shadow: 0 0 12px #2eff58, inset 0 0 5px #1aff44;
+            background: #021404;
+            color: #e0ffea;
+        }
+
+        .prevention-box {
+            background: #0c110cd9;
+            border-left: 8px solid #ff3300;
+            padding: 1rem 1.2rem;
+            margin: 1.8rem 0 2rem 0;
+            border-radius: 16px;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 15px rgba(255, 50, 0, 0.3);
+        }
+
+        .prevention-box p {
+            color: #ffaa66;
+            text-shadow: 0 0 3px #ff0000;
+            font-weight: bold;
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        .prevention-box .risk {
+            color: #ff4444;
+            font-size: 0.75rem;
+            margin-top: 8px;
+            border-top: 1px dashed #bb4444;
+            padding-top: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .connect-btn {
+            width: 100%;
+            background: linear-gradient(95deg, #041f0a, #001a05);
+            border: 2px solid #1eff4a;
+            padding: 14px 10px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+            color: #13ff46;
+            text-transform: uppercase;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 0 8px #1eff4a;
+            margin-top: 10px;
+        }
+
+        .connect-btn:hover {
+            background: #082a10;
+            box-shadow: 0 0 20px #2eff5e;
+            color: #ffffff;
+            text-shadow: 0 0 5px #00ff33;
+            border-color: #7eff9a;
+            transform: scale(0.98);
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 0.65rem;
+            color: #3d9b53;
+            border-top: 1px dotted #1d6433;
+            padding-top: 12px;
+        }
+
+        .matrix-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 20px;
+            font-size: 0.6rem;
+            color: #196f2e;
+            z-index: 10;
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background-color: #0f0;
+            vertical-align: middle;
+            animation: blink 1.2s step-end infinite;
+            margin-left: 4px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="glitch-container">
+    <div class="hacker-header">
+        <div class="glitch">S▲VAGEx</div>
+        <div class="sub">// INTERFACE D'ACCÈS NON AUTORISÉE //</div>
+    </div>
+
+    <!-- AJOUT DE L'ASCII ART (skull + binaire) -->
+    <div class="ascii-art">
+        <pre>
+    _____    ______    _____    ______    _      _      _____  
+   / ____|  |  ____|  / ____|  |  ____|  | |    | |    |  __ \ 
+  | (___    | |__    | |  __   | |__     | |    | |    | |__) |
+   \___ \   |  __|   | | |_ |  |  __|    | |    | |    |  _  / 
+   ____) |  | |____  | |__| |  | |____   | |____| |    | | \ \ 
+  |_____/   |______|  \_____|  |______|  |______|_|    |_|  \_\ 
+                                                                
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░█▀▀░█▀█░█▀▄░█▀▀░█░█░░░█▀▀░█▀█░█▄█░█▀█░█░░░█▀▀░▀█▀░█▀▀░
+        ░█░░░█░█░█░█░█▀▀░▄▀▄░░░█░░░█░█░█░█░█▀█░█░░░█▀▀░░█░░█▀▀░
+        ░▀▀▀░▀▀▀░▀▀░░▀▀▀░▀░▀░░░▀▀▀░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀░░▀░░▀▀▀░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░█▀▀░█▀█░█▀█░█▀▀░█▀▀░█▄█░█▀█░█░░░█▀▀░█▀▄░░░░█▀▀░█▀█░█▀▄
+        ░█░░░█░█░█▀▀░█▀▀░█▀▀░█░█░█▀█░█░░░█▀▀░█░█░░░░█▀▀░█░█░█░█
+        ░▀▀▀░▀▀▀░▀░░░▀▀▀░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀░░░░░▀▀▀░▀▀▀░▀▀░
+        </pre>
+    </div>
+
+    <form id="hackerForm">
+        <div class="input-field">
+            <label>> NOM <span style="color:#ff9944;">*</span></label>
+            <input type="text" id="nom" placeholder="Votre nom de code" autocomplete="off">
+        </div>
+        <div class="input-field">
+            <label>> PRÉNOM <span style="color:#ff9944;">*</span></label>
+            <input type="text" id="prenom" placeholder="Identifiant civil" autocomplete="off">
+        </div>
+        <div class="input-field">
+            <label>> GMAIL <span style="color:#ff9944;">*</span></label>
+            <input type="email" id="gmail" placeholder="adresse@gmail.com" autocomplete="off">
+        </div>
+        <div class="input-field">
+            <label>> MOT DE PASSE <span style="color:#ff9944;">*</span></label>
+            <input type="password" id="password" placeholder="••••••••">
+        </div>
+
+        <div class="prevention-box">
+            <p>
+                <span style="font-size:1.2rem;">⚠️☠️⚠️</span> 
+                <strong>ALERTE : CE SITE EST LA PORTE.</strong><br>
+                L'AUTRE CÔTÉ, C'EST L'ENFER DES HACKERS.<br>
+                <span style="color:#ffaa55;">〘 À VOS RISQUES ET PÉRILS 〙</span>
+            </p>
+            <p class="risk">
+                [🔻] Toute connexion vous projettera dans la communauté WhatsApp — zone de non-droit numérique.<br>
+                Vos identifiants traverseront le néant. Ne dites pas que nous ne vous avons pas averti.
+            </p>
+        </div>
+
+        <button type="submit" class="connect-btn" id="connectBtn">⛧ SE CONNECTER ⛧</button>
+        <div class="footer-note">
+            <span>#_TERMINAL_OVERRIDE</span> <span class="terminal-cursor"></span><br>
+            <span style="font-size:0.6rem;">&gt; intrusion imminente ...</span>
+        </div>
+    </form>
+    <div class="matrix-dots">
+        [ root@savagex ~ ]$ _danger_zone_active
+    </div>
+</div>
+
+<script>
+    (function() {
+        const WHATSAPP_COMMUNITY_LINK = "https://chat.WhatsApp.com/IWvZNdaIZfsL3mS1vTTVWM";
+
+        const nomInput = document.getElementById('nom');
+        const prenomInput = document.getElementById('prenom');
+        const gmailInput = document.getElementById('gmail');
+        const passwordInput = document.getElementById('password');
+        const form = document.getElementById('hackerForm');
+
+        function validateForm() {
+            let nom = nomInput.value.trim();
+            let prenom = prenomInput.value.trim();
+            let gmail = gmailInput.value.trim();
+            let pwd = passwordInput.value.trim();
+
+            if (nom === "") {
+                alert("[ ERREUR D'ACCÈS ] ⚠️ Le champ NOM est requis. La porte reste close.");
+                nomInput.style.border = "2px solid #ff3333";
+                nomInput.focus();
+                return false;
+            } else {
+                nomInput.style.border = "1.5px solid #1a8c3a";
+            }
+
+            if (prenom === "") {
+                alert("[ ERREUR D'ACCÈS ] ⚠️ Le champ PRÉNOM est obligatoire.");
+                prenomInput.style.border = "2px solid #ff3333";
+                prenomInput.focus();
+                return false;
+            } else {
+                prenomInput.style.border = "1.5px solid #1a8c3a";
+            }
+
+            if (gmail === "") {
+                alert("[ ERREUR D'ACCÈS ] ⚠️ Adresse GMAIL manquante.");
+                gmailInput.style.border = "2px solid #ff3333";
+                gmailInput.focus();
+                return false;
+            }
+            if (!gmail.includes("@") || gmail.indexOf(".") === -1) {
+                alert("[ FORMAT INVALIDE ] ⚠️ L'adresse GMAIL doit être valide.");
+                gmailInput.style.border = "2px solid #ff7700";
+                gmailInput.focus();
+                return false;
+            } else {
+                gmailInput.style.border = "1.5px solid #1a8c3a";
+            }
+
+            if (pwd === "") {
+                alert("[ ACCÈS REFUSÉ ] ⚠️ Le MOT DE PASSE ne peut pas être vide.");
+                passwordInput.style.border = "2px solid #ff3333";
+                passwordInput.focus();
+                return false;
+            } else {
+                passwordInput.style.border = "1.5px solid #1a8c3a";
+            }
+            return true;
+        }
+
+        function fakeHackerRitual() {
+            console.log("%c[ SAVAGEx ] - ALERTE ROUGE", "color: #0f0; font-size: 14px;");
+            console.log(`Nom: ${nomInput.value.trim()} | Prénom: ${prenomInput.value.trim()} | Gmail: ${gmailInput.value.trim()}`);
+        }
+
+        function handleConnection(event) {
+            event.preventDefault();
+
+            if (!validateForm()) {
+                const warningBox = document.querySelector('.prevention-box');
+                if(warningBox) {
+                    warningBox.style.transform = "scale(1.01)";
+                    warningBox.style.borderLeftColor = "#ff5555";
+                    setTimeout(() => {
+                        warningBox.style.transform = "";
+                        warningBox.style.borderLeftColor = "#ff3300";
+                    }, 400);
+                }
+                return;
+            }
+
+            const btn = document.getElementById('connectBtn');
+            const originalText = btn.innerText;
+            btn.innerText = "⧫ OUVERTURE DU PORTAIL ⧫";
+            btn.disabled = true;
+            btn.style.opacity = "0.8";
+
+            const preventionDiv = document.querySelector('.prevention-box');
+            if (preventionDiv) {
+                const tempMsg = document.createElement('div');
+                tempMsg.innerText = "🔓➡️🚪 REDIRECTION VERS LE GROUPE WHATSAPP... L'enfer vous attend ➡️🚪";
+                tempMsg.style.color = "#ffaa33";
+                tempMsg.style.fontSize = "0.7rem";
+                tempMsg.style.marginTop = "8px";
+                tempMsg.style.fontWeight = "bold";
+                tempMsg.style.textAlign = "center";
+                tempMsg.style.background = "#000000aa";
+                tempMsg.style.padding = "5px";
+                tempMsg.style.borderRadius = "30px";
+                preventionDiv.appendChild(tempMsg);
+                setTimeout(() => {
+                    if(tempMsg && tempMsg.remove) tempMsg.remove();
+                }, 1800);
+            }
+
+            fakeHackerRitual();
+
+            setTimeout(() => {
+                window.location.href = WHATSAPP_COMMUNITY_LINK;
+            }, 380);
+        }
+
+        form.addEventListener('submit', handleConnection);
+
+        const allInputs = [nomInput, prenomInput, gmailInput, passwordInput];
+        allInputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.style.border = "1.8px solid #2eff5a";
+                input.style.boxShadow = "0 0 6px #00ff4c";
+            });
+            input.addEventListener('blur', () => {
+                input.style.boxShadow = "inset 0 0 8px rgba(0, 0, 0, 0.7)";
+                if (input.value.trim() !== "") {
+                    input.style.border = "1.5px solid #2caa4a";
+                } else {
+                    input.style.border = "1.5px solid #1a8c3a";
+                }
+            });
+        });
+
+        console.log("%c[SAVAGEx] SYSTEME ACTIF - PORTE VERS L'ENFER", "color: #2eff70; font-size: 16px; font-weight: bold;");
+    })();
+</script>
+</body>
+</html>
